@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Happy Graduation, Azhea </title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; image-rendering: pixelated; }
+body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Press Start 2P', cursive; overflow: hidden; background-color: #ff9a9e; }
+.pixel-bg { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); background-size: 20px 20px; background-image: radial-gradient(#ffffff 1px, transparent 1px); display: flex; justify-content: center; align-items: center; }
+#interface { position: relative; z-index: 10; width: 95%; max-width: 460px; transition: all 1.5s ease; }
+#startScreen { background: #fff; border: 6px solid #ff4d6d; padding: 80px 20px; text-align: center; box-shadow: 10px 10px 0 #c9184a; border-style: outset; cursor: pointer; }
+#speedToggle { font-family: 'Press Start 2P', cursive; width: auto; margin-bottom: 10px; padding: 12px; font-size: 10px; background: #ff4d6d; color: white; border: 4px solid #fff; display: none; box-shadow: 4px 4px 0 #c9184a; cursor: pointer; }
+#speakerName { font-size: 14px; color: #fff; background: linear-gradient(#ff4d6d, #c9184a); display: inline-block; padding: 12px 24px; border: 4px solid #fff; border-bottom: none; margin-left: 10px; position: relative; top: 6px; z-index: 11; box-shadow: 4px 0 0 #c9184a; border-style: outset; }
+#chatbox { background: #fff; border: 8px solid #ff4d6d; padding: 35px; min-height: 480px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 12px 12px 0 #c9184a; border-style: inset; }
+.message { font-size: 15px; color: #222; line-height: 2.1; min-height: 280px; }
+.btn { font-family: 'Press Start 2P', cursive; background: #ff4d6d; color: #fff; border: 4px solid #fff; padding: 22px; font-size: 12px; cursor: pointer; width: 100%; margin-top: 10px; position: relative; box-shadow: 0 6px 0 #c9184a; }
+#miniGameScreen { display: none; position: absolute; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; background: #111; }
+canvas#gameCanvas { background: #1a1a1a; width: 100%; height: 540px; border-top: 8px solid #333; border-bottom: 8px solid #333; }
+#progressBar { position: absolute; top: 20px; width: 85%; height: 20px; background: #111; border: 4px solid #fff; z-index: 10; border-radius: 10px; overflow: hidden; }
+#progressFill { width: 0%; height: 100%; background: linear-gradient(to right, #ff4d6d, #e60000); }
+#azheaBtn { width: 130px; height: 130px; background: radial-gradient(#ff4d6d, #c9184a); color: white; border: 6px solid #fff; font-size: 14px; border-radius: 50%; box-shadow: 0 10px 0 #800e2b; position: relative; z-index: 100; margin-top: 15px; outline: none; font-family: 'Press Start 2P'; }
+#azheaBtn:active { top: 5px; box-shadow: 0 5px 0 #800e2b; }
+#countdownOverlay { position: absolute; top: 180px; width: 100%; display: none; justify-content: center; align-items: center; z-index: 200; color: #fff; font-size: 100px; text-shadow: 6px 6px 0 #000; }
+#gameMenu { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border: 8px solid #ff4d6d; padding: 30px; width: 85%; max-width: 380px; text-align: center; display: none; flex-direction: column; z-index: 300; box-shadow: 15px 15px 0 #000; }
+#blackout { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 4s ease-in; }
+.shutdown-active { opacity: 1 !important; }
+.flicker { animation: screen-flicker 0.15s infinite; }
+@keyframes screen-flicker { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
+@keyframes blink { 50% { opacity: 0; } }
+</style>
+</head>
+<body class="pixel-bg">
+<div id="blackout"></div>
+<div id="interface">
+  <div id="startScreen">
+    <h1 style="font-size: 18px; color: #ff4d6d; margin-bottom: 30px;">HAPPY GRADUATION!</h1>
+    <p style="font-size: 10px; color: #c9184a; animation: blink 0.8s infinite;">[ TOUCH TO OPEN ]</p>
+  </div>
+  <div id="chatWrap" style="display:none;">
+    <button id="speedToggle" onclick="toggleSpeed()">SPEED: 1X</button>
+    <div id="speakerName">YENNIE</div>
+    <div id="chatbox">
+      <div class="message" id="text"></div>
+      <div id="choices"></div>
+    </div>
+  </div>
+</div>
+
+<div id="miniGameScreen">
+  <div id="countdownOverlay">3</div>
+  <div id="gameMenu">
+      <h2 id="resultText" style="font-size: 16px; color: #ff4d6d; margin-bottom: 20px;"></h2>
+      <button class="btn" onclick="restartRace()">TRY AGAIN</button>
+      <button class="btn" onclick="goToChat()">NEXT</button>
+  </div>
+  <div id="progressBar"><div id="progressFill"></div></div>
+  <canvas id="gameCanvas"></canvas>
+  <button id="azheaBtn">TAP!</button>
+</div>
+
+<script>
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+let isTyping = false, globalRaceWon = false, textSpeed = 50, isEnding = false; 
+
+function toggleSpeed() {
+    if(isEnding) return;
+    textSpeed = (textSpeed === 50) ? 15 : 50;
+    document.getElementById('speedToggle').textContent = `SPEED: ${textSpeed === 15 ? '2X' : '1X'}`;
+}
+
+function playPop(freq = 400, dur = 0.1) { 
+    const osc = audioCtx.createOscillator(); const g = audioCtx.createGain();
+    osc.frequency.setValueAtTime(freq + Math.random()*150, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
+    osc.connect(g); g.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + dur);
+}
+
+const introSteps = [
+  { text: "Congratulations on your graduation, Azhea. Seeing you reach this milestone today makes me incredibly proud of everything you have accomplished.", choices: [{text: "NEXT", next: 1}] },
+  { text: "I’m really sorry I couldn’t be there for your graduation today, but I’m so proud of you and cheering for you from here.", choices: [{text: "NEXT", next: 2}] },
+  { text: "I really want to talk to you more often. I cannot help but notice how cool you look in that Ferrari jacket you always wear. It really suits you.", choices: [{text: "NEXT", next: 3}] },
+  { text: "You know I am a huge Red Bull fan so I usually cannot stand seeing Ferrari win, but seeing you in that jacket and knowing you accept my gifts truly makes my day.", choices: [{text: "NEXT", next: 4}] },
+  { text: "Since today is a celebration, let us have some fun. Your Ferrari against my Red Bull at the Shanghai Circuit. Are you ready to race?", choices: [{text: "START RACE!", next: "miniGame"}] }
+];
+
+const winSteps = [
+    { text: "Dang it. Red Bull lost the race again. I should have known better than to challenge you when you are at your best.", choices: [{text: "NEXT", next: 1}] },
+    { text: "Anyway, great job today. You handled that track perfectly, just like how you have handled every obstacle to get to this graduation ceremony.", choices: [{text: "NEXT", next: 2}] },
+    { text: "I am really happy to see you succeeding like this. Even if I can't be there in person, I hope you feel how much this day means.", choices: [{text: "NEXT", next: "apologySection"}] }
+];
+
+const loseSteps = [
+    { text: "It is okay to lose sometimes. In life, even the strongest people have days when they fall behind, but that does not mean they have failed.", choices: [{text: "NEXT", next: 1}] },
+    { text: "Even when things get dark and the path feels uncertain, every journey has its end. Keep going, your best days are still ahead.", choices: [{text: "NEXT", next: 2}] },
+    { text: "I am really happy to see you reaching this milestone. Even if I'm just a quiet supporter from a distance, I hope you feel how much this day means.", choices: [{text: "NEXT", next: "apologySection"}] }
+];
+
+const apologySteps = [
+    { text: "Azhea, I really need to say this properly. I am so sorry for that joke.", choices: [{text: "NEXT", next: 1}] },
+    { text: "I know I already said it online, but still..", choices: [{text: "NEXT", next: 2}] },
+    { text: "I didn't want today to pass without making sure we're really okay.", choices: [{text: "NEXT", next: "finalWait"}] }
+];
+
+const finalSteps = [
+    { text: "Azhea...", choices: [], special: "quiet" },
+    { text: "Despite everything... can I still wait for you?\n\n", choices: [{text: "YES", next: 2}, {text: "NO", next: 3}], special: "dramatic" },
+    { text: "Thank you. That really means a lot to me. I'll be here.", choices: [], special: "end" },
+    { text: "I understand. Thank you for the honesty. I'm still really happy for you today.", choices: [], special: "end" }
+];
+
+function typeWriter(text, i = 0, callback) {
+  isTyping = true;
+  const target = document.getElementById('text');
+  target.innerHTML = text.substring(0, i + 1).replace(/\n/g, '<br>');
+  if(i < text.length) playPop(300 + (isEnding ? -100 : 0));
+  if (i < text.length - 1) setTimeout(() => typeWriter(text, i + 1, callback), textSpeed);
+  else { isTyping = false; if(callback) callback(); }
+}
+
+function showStep(idx, set = introSteps) {
+  if (isTyping) return;
+  if(idx === "miniGame") {
+    document.getElementById('interface').style.display = "none";
+    document.getElementById('miniGameScreen').style.display = "flex";
+    setupRace(); runCountdown(); return;
+  }
+  if(idx === "apologySection") { showStep(0, apologySteps); return; }
+  if(idx === "finalWait") { showStep(0, finalSteps); return; }
+
+  const cd = document.getElementById('choices'); cd.innerHTML = "";
+  if(set[idx].special === "quiet" || set[idx].special === "dramatic" || set[idx].special === "end") { 
+      isEnding = true; textSpeed = 150; document.getElementById('speedToggle').style.display = "none"; 
+  }
+
+  typeWriter(set[idx].text, 0, () => {
+    if(set[idx].special === "quiet") {
+        setTimeout(() => showStep(1, finalSteps), 2000);
+    } else if (set[idx].special === "end") {
+        setTimeout(() => { triggerShutdown(); }, 2000);
+    } else {
+        const delay = (set[idx].special === "dramatic") ? 2000 : 0;
+        setTimeout(() => {
+            set[idx].choices.forEach(c => {
+                const b = document.createElement("button"); b.className = "btn"; b.textContent = c.text;
+                b.onclick = () => showStep(c.next, set); cd.appendChild(b);
+            });
+        }, delay);
+    }
+  });
+}
+
+function triggerShutdown() {
+    const blackout = document.getElementById('blackout');
+    document.body.classList.add('flicker');
+    blackout.classList.add('shutdown-active');
+    setTimeout(() => { location.reload(); }, 6000);
+}
+
+document.getElementById('startScreen').onclick = () => { audioCtx.resume(); document.getElementById('startScreen').style.display = "none"; document.getElementById('chatWrap').style.display = "block"; document.getElementById('speedToggle').style.display = "block"; showStep(0); };
+
+// RACING LOGIC
+const canvas = document.getElementById('gameCanvas'); const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth; canvas.height = 540;
+let playerX = 50, aiX = 50, isGameOver = true, raceStarted = false, cameraOffset = 0, shake = 0, playerVel = 0, aiVel = 23, friction = 0.95, trackLength = 16000, speedParticles = [];
+function setupRace() { playerX = 50; aiX = 50; playerVel = 0; cameraOffset = 0; isGameOver = false; raceStarted = false; speedParticles = []; document.getElementById('gameMenu').style.display = "none"; drawFrame(); }
+function runCountdown() { const overlay = document.getElementById('countdownOverlay'); overlay.style.display = "flex"; let count = 3; overlay.textContent = count; let timer = setInterval(() => { count--; if(count > 0) { overlay.textContent = count; playPop(200); } else if(count === 0) { overlay.textContent = "GO!"; playPop(600); } else { clearInterval(timer); overlay.style.display = "none"; raceStarted = true; update(); } }, 1000); }
+function drawF1Car(x, y, color, label, isPlayer, velocity) { let sx = x - cameraOffset + (isPlayer ? Math.random()*shake - shake/2 : 0); ctx.save(); ctx.translate(sx, y); if(velocity > 15) { ctx.globalAlpha = 0.2; ctx.fillStyle = color; ctx.fillRect(-20, 10, 100, 20); ctx.globalAlpha = 1.0; } ctx.fillStyle = "#111"; ctx.fillRect(10, -8, 24, 16); ctx.fillRect(10, 32, 24, 16); ctx.fillRect(100, -6, 20, 14); ctx.fillRect(100, 32, 20, 14); ctx.fillStyle = isPlayer ? "#e60000" : "#ffff00"; ctx.fillRect(18, -4, 8, 2); ctx.fillRect(106, -3, 6, 2); ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(0, 20); ctx.lineTo(20, 5); ctx.lineTo(60, 2); ctx.lineTo(90, 12); ctx.lineTo(130, 20); ctx.lineTo(90, 28); ctx.lineTo(60, 38); ctx.lineTo(20, 35); ctx.fill(); ctx.fillStyle = "#000"; ctx.fillRect(55, 12, 12, 16); ctx.strokeStyle = "#444"; ctx.lineWidth = 2; ctx.strokeRect(52, 10, 18, 20); ctx.fillStyle = "#111"; ctx.fillRect(-8, 0, 12, 40); ctx.fillStyle = color; ctx.fillRect(-12, 10, 15, 20); ctx.fillStyle = "#111"; ctx.fillRect(115, 12, 25, 16); ctx.fillStyle = "#fff"; ctx.font = "9px 'Press Start 2P'"; ctx.fillText(label, 0, -35); ctx.restore(); }
+function drawFinishLine() { let fx = (trackLength + 100) - cameraOffset; if(fx > -200 && fx < canvas.width + 200) { const sz = 25; for(let r=0; r<10; r++) { for(let c=0; c<4; c++) { ctx.fillStyle = (r+c)%2==0 ? "#fff" : "#000"; ctx.fillRect(fx + (c*sz), 200 + (r*sz), sz, sz); } } } }
+function updateSpeedVisuals() { if(playerVel > 12 && Math.random() > 0.4) { speedParticles.push({ x: canvas.width, y: 40 + Math.random()*450, w: playerVel*4, h: 2 }); } ctx.fillStyle = "rgba(255,255,255,0.2)"; speedParticles.forEach((p, i) => { p.x -= playerVel + 15; ctx.fillRect(p.x, p.y, p.w, p.h); if(p.x < -200) speedParticles.splice(i, 1); }); }
+function drawFrame() { ctx.clearRect(0,0,canvas.width, canvas.height); ctx.fillStyle = "#222"; ctx.fillRect(0, 200, canvas.width, 220); for(let i=-2000; i<trackLength+3000; i+=100){ let cx = i - cameraOffset; ctx.fillStyle = (Math.floor(i/100)%2==0)?"#fff":"#e60000"; ctx.fillRect(cx, 192, 100, 10); ctx.fillRect(cx, 418, 100, 10); } updateSpeedVisuals(); drawFinishLine(); drawF1Car(aiX, 230, "#0600ef", "MAX VERSTAPPEN", false, aiVel); drawF1Car(playerX, 330, "#e60000", "AZHEA", true, playerVel); }
+function update() { if(isGameOver || !raceStarted) return; playerVel *= friction; playerX += playerVel; aiX += aiVel; let targetCam = playerX - 100 + (playerVel * 4); cameraOffset += (targetCam - cameraOffset) * 0.1; shake *= 0.85; drawFrame(); document.getElementById('progressFill').style.width = (playerX/trackLength)*100 + "%"; if(aiX > trackLength) finishRace(false); else if(playerX > trackLength) finishRace(true); else requestAnimationFrame(update); }
+function finishRace(won) { isGameOver = true; globalRaceWon = won; document.getElementById('resultText').textContent = won ? "VICTORY FOR FERRARI!" : "RED BULL WINS... TRY AGAIN?"; setTimeout(() => { document.getElementById('gameMenu').style.display = "flex"; }, 1000); }
+function restartRace() { setupRace(); runCountdown(); }
+function goToChat() { document.getElementById('miniGameScreen').style.display = "none"; document.getElementById('interface').style.display = "block"; showStep(0, globalRaceWon ? winSteps : loseSteps); }
+document.getElementById('azheaBtn').onclick = () => { if(!isGameOver && raceStarted){ playerVel += 19; shake = 20; playPop(180, 0.05); } };
+</script>
+</body>
+</html>
