@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Happy Birthday Ilah</title>
+    <!-- Video Game / Minecraft Style Pixel Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color-1: #ffdae9;
+            --bg-color-2: #fed4e7;
+            --bg-color-3: #f5cbe3;
+            --card-bg: rgba(255, 243, 248, 0.92); 
+            --border-dark: #3a222e;
+            --text-color: #523041;
+            --pink-bright: #ff7096;
+            --pink-accent: #ffaec1;
+            --window-glow: 0 16px 40px rgba(222, 163, 185, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Press Start 2P', monospace;
+            image-rendering: pixelated;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color-1);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            color: var(--text-color);
+            position: relative;
+        }
+
+        /* ---------------- BACKGROUND DESIGNS & ANIMATIONS ---------------- */
+        
+        /* Animated Background Gradient Waves */
+        .bg-gradient-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(180deg, var(--bg-color-1) 0%, var(--bg-color-2) 50%, var(--bg-color-3) 100%);
+            background-size: 100% 200%;
+            animation: gradientWave 12s ease infinite alternate;
+            z-index: 0;
+        }
+
+        @keyframes gradientWave {
+            0% { background-position: 50% 0%; }
+            100% { background-position: 50% 100%; }
+        }
+
+        /* Horizontal Pixel Scanline Roll */
+        .scanlines {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0) 95%,
+                rgba(255, 194, 214, 0.3) 95%,
+                rgba(255, 194, 214, 0.3) 100%
+            );
+            background-size: 100% 24px;
+            animation: scanlineMove 16s linear infinite;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        @keyframes scanlineMove {
+            to { background-position-y: 100%; }
+        }
+
+        /* Parallax Raining Sparkles & Star Particles */
+        .particle-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0; left: 0;
+            overflow: hidden;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .pixel-star {
+            position: absolute;
+            background-color: #fff;
+            width: 8px; height: 8px;
+            box-shadow: 0 0 0 0 rgba(255,255,255,0.4);
+            animation: floatUp 14s linear infinite;
+        }
+
+        .pixel-heart-bg {
+            position: absolute;
+            width: 12px; height: 12px;
+            background: rgba(255, 112, 150, 0.25);
+            animation: floatUp 18s linear infinite;
+        }
+        .pixel-heart-bg::before, .pixel-heart-bg::after {
+            content: "";
+            background: inherit;
+            position: absolute;
+            width: 12px; height: 12px;
+        }
+        .pixel-heart-bg::before { top: -6px; left: 0; }
+        .pixel-heart-bg::after { left: -6px; top: 0; }
+
+        @keyframes floatUp {
+            0% { transform: translateY(105vh) scale(0.8); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+
+        /* ---------------- CORE INTERACTIVE CONTAINER ---------------- */
+
+        .game-viewport {
+            width: 92%;
+            max-width: 364px;
+            height: 490px;
+            position: relative;
+            perspective: 1600px;
+            z-index: 10;
+            /* Constant gentle floating motion */
+            animation: idleFloat 5s ease-in-out infinite;
+        }
+
+        @keyframes idleFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(0.5deg); }
+        }
+
+        /* ---------------- ENVELOPE / OPENING ANIMATION ---------------- */
+
+        .envelope {
+            width: 100%;
+            height: 100%;
+            background-color: var(--pink-accent);
+            border: 8px solid var(--border-dark);
+            box-shadow: 0 16px 0 rgba(58, 34, 46, 0.15);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: absolute;
+            z-index: 30;
+            transform-style: preserve-3d;
+            transition: transform 1s cubic-bezier(0.6, -0.28, 0.735, 0.045), opacity 0.8s, visibility 0.8s;
+            padding: 24px;
+        }
+
+        /* Top Triangular Envelope Flap Block */
+        .envelope::before {
+            content: '';
+            position: absolute;
+            top: -4px; left: -4px;
+            width: calc(100% + 8px);
+            height: 55%;
+            background: #ffc2cf;
+            border: 8px solid var(--border-dark);
+            border-top: none;
+            z-index: 2;
+            transform-origin: top;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+        }
+
+        .envelope.open {
+            transform: scale(0.8) translateY(-600px) rotateX(45deg);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        
+        .envelope.open::before {
+            transform: rotateX(180deg);
+        }
+
+        .envelope-content {
+            position: relative;
+            z-index: 5;
+            text-align: center;
+            width: 100%;
+        }
+
+        .envelope h1 {
+            font-size: 14px;
+            line-height: 2;
+            color: var(--border-dark);
+            text-shadow: 3px 3px 0px #fff;
+            margin: 0 0 40px 0;
+            animation: textPulse 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes textPulse {
+            to { transform: scale(1.03); color: #4e142a; }
+        }
+
+        /* Modular Built CSS Pixel Heart Seal */
+        .seal-heart {
+            width: 44px; height: 44px;
+            background: var(--pink-bright);
+            position: relative;
+            margin: 0 auto;
+            animation: heartbeat 0.8s infinite alternate cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+        }
+        .seal-heart::before, .seal-heart::after {
+            content: "";
+            background: var(--pink-bright);
+            position: absolute;
+            width: 44px; height: 44px;
+        }
+        .seal-heart::before { top: -22px; left: 0; }
+        .seal-heart::after { left: -22px; top: 0; }
+
+        @keyframes heartbeat {
+            to { transform: scale(1.15); background: #ff4774; }
+        }
+
+        .click-hint {
+            margin-top: 55px;
+            font-size: 8px;
+            animation: blinker 1.2s steps(2, start) infinite;
+            color: #fff;
+            background: var(--border-dark);
+            padding: 12px;
+            line-height: 1.6;
+            border-radius: 2px;
+            box-shadow: inset -2px -2px 0 #201219;
+        }
+
+        @keyframes blinker { to { opacity: 0; } }
+
+        /* ---------------- RPG MAIN CARD INTERFACE ---------------- */
+
+        .card {
+            width: 100%;
+            height: 100%;
+            background-color: var(--card-bg);
+            border: 8px solid var(--border-dark);
+            box-shadow: var(--window-glow), inset -4px -4px 0px #fcaec7, inset 4px 4px 0px #fff;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: absolute;
+            z-index: 15;
+            opacity: 0;
+            transform: scale(0.7) rotateY(-15deg);
+            transition: opacity 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                        transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+        }
+
+        /* Show card cleanly once envelope is active */
+        .envelope.open + .card {
+            opacity: 1;
+            transform: scale(1) rotateY(0deg);
+            pointer-events: auto;
+        }
+
+        /* Screen transitions when sliding forward */
+        .card.bump-slide {
+            animation: screenBump 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        @keyframes screenBump {
+            0% { transform: scale(1) translateY(0); }
+            50% { transform: scale(0.97) translateY(4px); }
+            100% { transform: scale(1) translateY(0); }
+        }
+
+        .card-header {
+            font-size: 8px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 6px dotted #f7a1bd;
+            padding-bottom: 14px;
+            margin-bottom: 16px;
+            color: #b8627a;
+            letter-spacing: 1px;
+        }
+
+        /* RPG Dialogue Text Box Container */
+        .text-container {
+            flex-grow: 1;
+            position: relative;
+            border: 4px solid #fcaec7;
+            padding: 16px;
+            margin-bottom: 16px;
+            overflow-y: auto;
+            background-color: rgba(255, 255, 255, 0.7);
+            box-shadow: inset 3px 3px 0 rgba(0,0,0,0.03);
+        }
+
+        /* RPG Corner Brackets for Text Box decoration */
+        .text-container::before {
+            content: '';
+            position: absolute;
+            top: 4px; left: 4px; right: 4px; bottom: 4px;
+            border: 2px dashed rgba(253, 157, 187, 0.4);
+            pointer-events: none;
+        }
+
+        .text-display {
+            font-size: 11px;
+            line-height: 2.1;
+            color: var(--text-color);
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        /* Animated prompt arrow indicating typing finished */
+        .prompt-arrow {
+            position: absolute;
+            bottom: 8px; right: 8px;
+            width: 0; height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 8px solid var(--pink-bright);
+            display: none;
+            animation: promptBounce 0.6s infinite alternate;
+        }
+
+        @keyframes promptBounce {
+            to { transform: translateY(4px); }
+        }
+
+        /* ---------------- GAME CONTROL BUTTONS ---------------- */
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn {
+            background-color: #fff;
+            border: 4px solid var(--border-dark);
+            padding: 14px 8px;
+            font-size: 8px;
+            cursor: pointer;
+            color: var(--border-dark);
+            box-shadow: -4px -4px 0px inset #e4dedf, 4px 4px 0px inset #fff;
+            flex: 1;
+            text-align: center;
+            position: relative;
+            transition: background-color 0.1s;
+        }
+
+        /* Realistic Pixel down-press effect */
+        .btn:active:not(:disabled) {
+            box-shadow: 2px 2px 0px inset #e4dedf;
+            transform: translate(2px, 2px);
+        }
+
+        .btn:disabled {
+            background-color: #e5e1e3;
+            border-color: #9c9296;
+            color: #9c9296;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .btn-speed {
+            background-color: #fffbc4;
+        }
+        .btn-speed.active {
+            background-color: #ffd043;
+            box-shadow: -4px -4px 0px inset #cca010, 4px 4px 0px inset #fff;
+        }
+
+        .page-number {
+            font-size: 8px;
+        }
+
+        /* Block text cursor */
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 14px;
+            background-color: var(--border-dark);
+            animation: cursorBlink 0.7s steps(2, start) infinite;
+            vertical-align: middle;
+            margin-left: 4px;
+        }
+
+        @keyframes cursorBlink { to { opacity: 0; } }
+
+    </style>
+</head>
+<body>
+
+    <!-- Layered Complex Visual Sceneries -->
+    <div class="bg-gradient-overlay"></div>
+    <div class="scanlines"></div>
+    <div class="particle-layer" id="particle-layer"></div>
+
+    <div class="game-viewport">
+        
+        <!-- STEP 1: Envelope Component -->
+        <div class="envelope" id="envelope" onclick="openLetterSystem()">
+            <div class="envelope-content">
+                <h1>HAPPY BIRTHDAY<br>ELAH!!</h1>
+                <div class="seal-heart"></div>
+                <div class="click-hint">[ TAP TO UNSEAL ]</div>
+            </div>
+        </div>
+
+        <!-- STEP 2: RPG Main Text Terminal Card -->
+        <div class="card" id="letter-card">
+            <div class="card-header">
+                <span>YENN</span>
+                <span class="page-number" id="page-num">1/16</span>
+            </div>
+
+            <div class="text-container">
+                <div class="text-display"><span id="typed-text"></span><span class="cursor" id="text-cursor"></span></div>
+                <div class="prompt-arrow" id="prompt-arrow"></div>
+            </div>
+
+            <div class="controls">
+                <button class="btn" id="back-btn" onclick="prevSlide()" disabled>&lt; BACK</button>
+                <button class="btn btn-speed" id="speed-btn" onclick="toggleSpeed()">1X SPEED</button>
+                <button class="btn" id="next-btn" onclick="nextSlide()">NEXT &gt;</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Story Data Logs
+        const slides = [
+            "Hello, Ilah Happy Birthday!",
+            "I’m wishing you the happiest birthday, and I hope you overcome every problem you’re facing right now!",
+            "And uh, I made this code as a birthday letter and not a gift because I’m still trying to make or get you a gift",
+            "I was even thinking about adding some mini-games here for you, but I wasn't able to since this was kind of a rushed coding project...",
+            "I was even thinking about giving you a kitten, but your mom doesn’t like pets, just like you told me… sigh.",
+            "Or I could make you a DIY gift or buy you some jewelry, but I suck at picking and choosing things, bro",
+            "But yeah, I’ll just give it to you when we get the chance to meet each other soon;))",
+            "Anyways.",
+            "I’m really happy I met someone like you",
+            "You’re fun to talk to, and you make everything feel awesome",
+            "And tbh.",
+            "I get scared talking to other people sometimes because I feel like they might see me as weird or a freak",
+            "But you’re different. You make me feel comfortable",
+            "You are also autistic, and honestly, it made me feel understood loll",
+            "You’re funny, kind, and you get my energy.",
+            "I really like talking to you, Ilah.\n\n[ END ♥️ ]"
+        ];
+
+        let currentSlide = 0;
+        let textIndex = 0;
+        let isTyping = false;
+        let typingTimeout;
+        let typingSpeed = 55; 
+        let isFastSpeed = false;
+
+        const typedTextElement = document.getElementById("typed-text");
+        const pageNumElement = document.getElementById("page-num");
+        const backBtn = document.getElementById("back-btn");
+        const nextBtn = document.getElementById("next-btn");
+        const speedBtn = document.getElementById("speed-btn");
+        const envelope = document.getElementById("envelope");
+        const card = document.getElementById("letter-card");
+        const arrow = document.getElementById("prompt-arrow");
+        const cursor = document.getElementById("text-cursor");
+
+        // Background Multi-Parallax Particles Generator
+        function buildStarfields() {
+            const container = document.getElementById('particle-layer');
+            const totalItems = 18;
+            
+            for(let i = 0; i < totalItems; i++) {
+                const isHeart = i % 3 === 0;
+                const element = document.createElement('div');
+                element.className = isHeart ? 'pixel-heart-bg' : 'pixel-star';
+                
+                element.style.left = Math.random() * 100 + '%';
+                element.style.animationDelay = Math.random() * 16 + 's';
+                element.style.animationDuration = (12 + Math.random() * 8) + 's';
+                
+                container.appendChild(element);
+            }
+        }
+        buildStarfields();
+
+        // Safe Unsealing Sequence Activation
+        function openLetterSystem() {
+            envelope.classList.add("open");
+            setTimeout(() => {
+                card.classList.add('bump-slide');
+                setTimeout(() => card.classList.remove('bump-slide'), 300);
+                loadSlide(0);
+            }, 900); 
+        }
+
+        // Complete Typewriter Output System Engine
+        function runTypewriter(text) {
+            if (textIndex < text.length) {
+                typedTextElement.textContent += text.charAt(textIndex);
+                textIndex++;
+                typingTimeout = setTimeout(() => runTypewriter(text), typingSpeed);
+            } else {
+                isTyping = false;
+                arrow.style.display = "block"; 
+                cursor.style.display = "none";
+                updateButtons();
+            }
+        }
+
+        // Initialize Slide Setup
+        function loadSlide(index) {
+            clearTimeout(typingTimeout);
+            isTyping = true;
+            arrow.style.display = "none";
+            cursor.style.display = "inline-block";
+            
+            if(index !== currentSlide) {
+                card.classList.add('bump-slide');
+                setTimeout(() => card.classList.remove('bump-slide'), 300);
+            }
+
+            currentSlide = index;
+            textIndex = 0;
+            typedTextElement.textContent = "";
+            pageNumElement.textContent = `${currentSlide + 1}/${slides.length}`;
+            
+            runTypewriter(slides[currentSlide]);
+            updateButtons();
+        }
+
+        function nextSlide() {
+            if (isTyping) {
+                clearTimeout(typingTimeout);
+                typedTextElement.textContent = slides[currentSlide];
+                isTyping = false;
+                arrow.style.display = "block";
+                cursor.style.display = "none";
+                updateButtons();
+                return;
+            }
+
+            if (currentSlide < slides.length - 1) {
+                loadSlide(currentSlide + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                loadSlide(currentSlide - 1);
+            }
+        }
+
+        function toggleSpeed() {
+            isFastSpeed = !isFastSpeed;
+            if (isFastSpeed) {
+                typingSpeed = 15; 
+                speedBtn.textContent = "2X SPEED";
+                speedBtn.classList.add("active");
+            } else {
+                typingSpeed = 55; 
+                speedBtn.textContent = "1X SPEED";
+                speedBtn.classList.remove("active");
+            }
+        }
+
+        function updateButtons() {
+            backBtn.disabled = (currentSlide === 0);
+            
+            if (currentSlide === slides.length - 1 && !isTyping) {
+                nextBtn.textContent = "DONE! ♥️";
+                nextBtn.disabled = true;
+            } else {
+                nextBtn.textContent = isTyping ? "[SKIP]" : "NEXT >";
+                nextBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
