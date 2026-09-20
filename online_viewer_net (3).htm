@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>HI HANBI ♡</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;width:100%;height:100%;height:100dvh;overflow:hidden;background:#d4c8ad;font-family:'Press Start 2P',monospace}
+body{display:flex;justify-content:center;align-items:center}
+
+/* Fully responsive outer container */
+.phone{
+    width:100%;
+    height:100%;
+    height:100dvh;
+    max-width:430px;
+    max-height:932px;
+    position:relative;
+    padding:clamp(10px, 3vh, 20px);
+    display:flex;
+    flex-direction:column;
+}
+
+/* Dynamic Stacked paper effect */
+.layer{position:absolute;border:2px solid #5a4f29;background:#cca572;box-shadow:4px 4px 0 rgba(0,0,0,0.1)}
+.layer-1{
+    transform:rotate(-3deg);
+    background:#c8b183;
+    top:calc(clamp(10px, 3vh, 20px) + 6px);
+    bottom:calc(clamp(10px, 3vh, 20px) - 6px);
+    left:clamp(10px, 3vh, 20px);
+    right:clamp(10px, 3vh, 20px);
+}
+.layer-2{
+    transform:rotate(2.5deg);
+    background:#e2d1a8;
+    top:clamp(10px, 3vh, 20px);
+    bottom:clamp(10px, 3vh, 20px);
+    left:calc(clamp(10px, 3vh, 20px) + 6px);
+    right:calc(clamp(10px, 3vh, 20px) - 6px);
+}
+
+/* Top grid paper */
+.paper-main{
+    position:absolute;
+    inset:clamp(10px, 3vh, 20px);
+    background:#fdf8e1;
+    border:2px solid #5a4f29;
+    box-shadow:4px 4px 0 rgba(60,50,20,.15);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    z-index:5;
+}
+.paper-main:before{
+    content:"";
+    position:absolute;
+    inset:-100px;
+    background-image:linear-gradient(rgba(130,150,170,.25) 1px,transparent 1px),linear-gradient(90deg,rgba(130,150,170,.25) 1px,transparent 1px);
+    background-size:20px 20px;
+    pointer-events:none;
+    animation:panGrid 30s linear infinite;
+}
+@keyframes panGrid{0%{transform:translate(0,0)}100%{transform:translate(-40px,-40px)}}
+
+/* Decorative Stamp */
+.stamp{
+    position:absolute;
+    top:clamp(8px, 2vh, 15px);
+    right:clamp(8px, 2vw, 15px);
+    border:2px dashed #d99a9a;
+    background:#fff5f5;
+    padding:6px;
+    transform:rotate(12deg);
+    z-index:20;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    box-shadow:2px 2px 0 rgba(0,0,0,0.1);
+}
+.stamp-text{font-size:4px;color:#a86c6c;margin-top:4px}
+.heart{font-size:14px;color:#d9534f;display:inline-block;animation:heartbeat 1.5s infinite}
+@keyframes heartbeat{0%,100%{transform:scale(1)}15%,45%{transform:scale(1.25)}30%{transform:scale(1)}}
+
+/* Pixel Stickers */
+.sticker { position: absolute; image-rendering: pixelated; z-index: 12; filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.15)); }
+.s1 { width:22px; height:22px; top:12px; left:4%; transform:rotate(-15deg); background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1 2h3v2H1zm5 0h3v2H6zM0 4h10v2H0zM1 6h8v2H1zM3 8h4v2H3z' fill='%23ff6699'/%3E%3C/svg%3E") no-repeat center/contain; }
+.s2 { width:20px; height:20px; top:8px; left:18%; transform:rotate(10deg); background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 11'%3E%3Cpath d='M5 0h1v3h3v1H7v2h2v1H7v2H6V7H5v2H4V9H2V8h2V6H2V5h3V4H2V3h3V0z' fill='%23ffd700'/%3E%3C/svg%3E") no-repeat center/contain; }
+.s3 { width:16px; height:16px; top:18px; left:32%; transform:rotate(-8deg); background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M2 0h6v1H2zm-1 1h1v1H1zm7 0h1v1H8zM0 2h1v6H0zm9 0h1v6H9zM1 8h1v1H1zm7 0h1v1H8zM2 9h6v1H2z' fill='%233498db'/%3E%3Cpath d='M3 3h1v2H3zm3 0h1v2H6zM2 6h1v1H2zm5 0h1v1H7zM3 7h4v1H3z' fill='%23000'/%3E%3C/svg%3E") no-repeat center/contain; }
+.s4 { width:18px; height:18px; top:10px; left:46%; transform:rotate(20deg); background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9'%3E%3Cpath d='M1 1h2v2H1zm5 0h2v2H6zM3 3h3v3H3zM1 6h2v2H1zm5 0h2v2H6z' fill='%232ecc71'/%3E%3C/svg%3E") no-repeat center/contain; }
+
+/* Running Animals */
+.animal-wrap { position: absolute; bottom: calc(60px + env(safe-area-inset-bottom, 0px)); z-index: 8; }
+.bunny-wrap { animation: chase 12s linear infinite; }
+.cat-wrap { animation: chase 12s linear infinite .7s; }
+.animal { width: 28px; height: 28px; image-rendering: pixelated; filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.1)); }
+.bunny { background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M2 0h2v4H2zm4 0h2v4H6zM1 4h8v6H1z' fill='%23fff' stroke='%233b3318' stroke-width='0.5'/%3E%3Cpath d='M3 6h1v1H3zm3 0h1v1H6z' fill='%233b3318'/%3E%3Cpath d='M4 7h2v1H4z' fill='%23ff9999'/%3E%3C/svg%3E") no-repeat center/contain; animation: hop .35s steps(2) infinite; }
+.cat { background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1 2h2v3H1zm6 0h2v3H7zM1 4h8v6H1z' fill='%23e67e22' stroke='%233b3318' stroke-width='0.5'/%3E%3Cpath d='M3 6h1v1H3zm3 0h1v1H6z' fill='%233b3318'/%3E%3Cpath d='M4 7h2v1H4z' fill='%23e74c3c'/%3E%3C/svg%3E") no-repeat center/contain; animation: hop .35s steps(2) infinite .1s; }
+
+@keyframes chase {
+    0% { left: -50px; transform: scaleX(1); }
+    45% { left: 100%; transform: scaleX(1); }
+    50% { left: 100%; transform: scaleX(-1); }
+    95% { left: -50px; transform: scaleX(-1); }
+    100% { left: -50px; transform: scaleX(1); }
+}
+@keyframes hop {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+
+/* Content Areas */
+.story{
+    position:absolute;
+    inset:0;
+    padding:clamp(50px, 8vh, 70px) 15px calc(75px + env(safe-area-inset-bottom, 0px));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:10;
+}
+.scene{display:none;width:100%;text-align:center}
+.scene.active{display:block;animation:sceneReveal .4s cubic-bezier(0.175,0.885,0.32,1.275)}
+@keyframes sceneReveal{0%{opacity:0;transform:translateY(15px) scale(0.95)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.scene p{
+    margin:0 auto;
+    max-width:290px;
+    color:#3b3318;
+    font-size:clamp(8px, 2.6vw, 10px);
+    line-height:2.1;
+    background:rgba(253,248,225,0.85);
+    padding:8px 10px;
+    border-radius:4px;
+}
+.big{font-size:clamp(11px, 3.5vw, 13px)!important;line-height:1.8!important}
+
+.opening h1{font-size:clamp(18px, 5.5vw, 22px);line-height:1.5;color:#3b3318;margin:0 0 20px;text-shadow:2px 2px 0 rgba(90,79,41,.1)}
+.start{display:inline-block;background:#f5d562;border:2px solid #5a4f29;box-shadow:2px 2px 0 rgba(90,79,41,.3);padding:12px 14px;font-size:7px;color:#3b3318;cursor:pointer;animation:pulse 1.25s infinite;transition:transform 0.1s}
+.start:active{transform:translate(2px,2px);box-shadow:0 0 0 transparent}
+@keyframes pulse{50%{opacity:.6}}
+
+/* Bottom Controls with Notch/Navigation Safe Area Support */
+.bottom{
+    position:absolute;
+    left:10px;
+    right:10px;
+    bottom:calc(10px + env(safe-area-inset-bottom, 0px));
+    z-index:15;
+    background:rgba(253,248,225,0.95);
+    padding:6px;
+    border-radius:4px;
+}
+.bar{height:4px;background:rgba(90,79,41,.17);margin-bottom:8px;border:1px solid #c8b183}
+.fill{height:100%;width:0;background:#5a4f29;transition:width .4s cubic-bezier(0.175,0.885,0.32,1.275);position:relative}
+.fill:after{content:'';position:absolute;right:0;top:-1px;height:4px;width:3px;background:rgba(255,255,255,.9);box-shadow:0 0 6px #fff}
+.controls{display:flex;align-items:center;justify-content:space-between;gap:4px}
+.controls button{font:6px 'Press Start 2P';color:#3b3318;background:#fffceb;border:2px solid #8f7d45;padding:10px 8px;cursor:pointer;transition:all 0.2s;box-shadow:2px 2px 0 rgba(143,125,69,0.2)}
+.controls button:active{transform:translate(2px,2px);box-shadow:0 0 0 transparent}
+.page{font-size:6px;color:#7a6b3b;background:#fffceb;padding:6px 8px;border:1px dashed #c8b183}
+
+/* Final Popups */
+.question,.end{display:none;position:absolute;inset:0;z-index:30;background:#faeaa1}
+.question.show{display:flex;animation:popup .5s cubic-bezier(0.175,0.885,0.32,1.275) forwards;align-items:center;justify-content:center;padding:20px;text-align:center}
+.qbox{max-width:320px;width:100%;background:#fdf8e1;border:2px solid #5a4f29;padding:20px 15px;box-shadow:4px 4px 0 rgba(90,79,41,.2)}
+.qbox h2{font-size:clamp(11px, 3.5vw, 13px);line-height:1.8;color:#3b3318;margin:0 0 15px}
+.qbox p{font-size:clamp(6px, 2.2vw, 7px);line-height:2.0;color:#5a4f29;margin:0 0 20px}
+.btn-group{display:flex;gap:10px;width:100%}
+.send{flex:1;padding:12px;border:2px solid #5a4f29;background:#f5d562;font:7px 'Press Start 2P';color:#3b3318;cursor:pointer;box-shadow:2px 2px 0 rgba(90,79,41,.2);transition:all 0.1s}
+.send:active{transform:translate(2px,2px);box-shadow:0 0 0 transparent}
+
+.end.show{display:flex;animation:popup .5s cubic-bezier(0.175,0.885,0.32,1.275) forwards;align-items:center;justify-content:center;text-align:center;padding:20px;background:#f5d562}
+@keyframes popup{0%{opacity:0;transform:scale(0.8) translateY(20px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+.end p{max-width:320px;width:100%;font-size:clamp(8px, 2.5vw, 9px);line-height:2.0;color:#3b3318;background:#fdf8e1;padding:24px 16px;border:2px solid #5a4f29;box-shadow:4px 4px 0 rgba(90,79,41,.2);margin:0 auto}
+
+.audio-player{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;left:-10px;bottom:-10px}
+.cursor{animation:cursorBlink .8s infinite}@keyframes cursorBlink{50%{opacity:0}}
+.flash-char{display:inline-block;animation:typeBounce .15s cubic-bezier(0.175,0.885,0.32,1.275)}
+@keyframes typeBounce{0%{transform:translateY(-4px) scale(1.3);color:#fff;text-shadow:0 0 8px rgba(255,255,255,0.9)}100%{transform:none;color:inherit;text-shadow:none}}
+</style>
+</head>
+<body>
+<div class="phone">
+    <!-- Stacked Paper Backgrounds -->
+    <div class="layer layer-1"></div>
+    <div class="layer layer-2"></div>
+    
+    <!-- Main Paper UI -->
+    <div class="paper-main">
+        
+        <!-- Stickers -->
+        <div class="sticker s1"></div>
+        <div class="sticker s2"></div>
+        <div class="sticker s3"></div>
+        <div class="sticker s4"></div>
+
+        <div class="stamp" id="stampUI">
+            <div class="heart">♡</div>
+            <div class="stamp-text">INTRAMS</div>
+        </div>
+
+        <!-- Running Animals -->
+        <div class="animal-wrap bunny-wrap"><div class="animal bunny"></div></div>
+        <div class="animal-wrap cat-wrap"><div class="animal cat"></div></div>
+
+        <div class="story" id="story">
+            <div class="scene active opening">
+                <h1>HI<br>HANBI</h1>
+                <div class="start" onclick="startGame()">▶ START</div>
+            </div>
+            <div class="scene"><p>Hi Hanbi.</p></div>
+            <div class="scene"><p>Okay... I've actually been thinking about how to say this for a while.</p></div>
+            <div class="scene"><p>I kept rewriting it because I didn't want it to sound weird.</p></div>
+            <div class="scene"><p>So I decided to just be honest.</p></div>
+            <div class="scene"><p>We've only known each other for a few weeks.</p></div>
+            <div class="scene"><p>Which honestly isn't that long.</p></div>
+            <div class="scene"><p>But somehow, talking to you became something I really look forward to.</p></div>
+            <div class="scene"><p>Especially when I suddenly see your name on my notifications.</p></div>
+            <div class="scene"><p class="big">It actually makes me really happy.</p></div>
+            <div class="scene"><p>And when you watch the videos I send you... yeah, I notice that.</p></div>
+            <div class="scene"><p>It sounds small, but those little things genuinely make me happy.</p></div>
+            <div class="scene"><p>Even the way you type sometimes makes me smile.</p></div>
+            <div class="scene"><p>Especially those extra letters you put at the end of words.</p></div>
+            <div class="scene"><p>I don't even know why. I just think it's cute.</p></div>
+            <div class="scene"><p>I guess I've started noticing little things about you.</p></div>
+            <div class="scene"><p>And then there was Intrams.</p></div>
+            <div class="scene"><p>I saw you dancing.</p></div>
+            <div class="scene"><p class="big">And for a moment, everything kind of stopped.</p></div>
+            <div class="scene"><p>You looked really pretty that day.</p></div>
+            <div class="scene"><p>I really liked your hairstyle too.</p></div>
+            <div class="scene"><p>I think I might have seen you before that.</p></div>
+            <div class="scene"><p>At CRHS, when there was a meeting at the gym.</p></div>
+            <div class="scene"><p>I remember seeing you and thinking you looked really pretty and unique.</p></div>
+            <div class="scene"><p>But now that I've actually talked to you...</p></div>
+            <div class="scene"><p class="big">I realized something.</p></div>
+            <div class="scene"><p>I don't just want to know how you look.</p></div>
+            <div class="scene"><p class="big">I want to know you.</p></div>
+            <div class="scene"><p>Like what kind of person you really are.</p></div>
+            <div class="scene"><p>What makes you laugh.</p></div>
+            <div class="scene"><p>What things you really care about.</p></div>
+            <div class="scene"><p>What you could talk about for hours.</p></div>
+            <div class="scene"><p>What makes you happy on a bad day.</p></div>
+            <div class="scene"><p>What random things you think about.</p></div>
+            <div class="scene"><p>Even the little things you don't usually tell people.</p></div>
+            <div class="scene"><p>I know I don't really know everything about you yet.</p></div>
+            <div class="scene"><p>And I don't want to pretend that I do.</p></div>
+            <div class="scene"><p>I'd rather learn about you slowly.</p></div>
+            <div class="scene"><p>One conversation at a time.</p></div>
+            <div class="scene"><p>One random conversation.</p></div>
+            <div class="scene"><p>One stupid joke.</p></div>
+            <div class="scene"><p>One memory at a time.</p></div>
+            <div class="scene"><p>And maybe you can get to know me too.</p></div>
+            <div class="scene"><p>I don't know what we'll become.</p></div>
+            <div class="scene"><p>Maybe we'll just become closer friends.</p></div>
+            <div class="scene"><p>Maybe something more could happen someday.</p></div>
+            <div class="scene"><p>Honestly, I don't know.</p></div>
+            <div class="scene"><p>And I'm okay with not knowing yet.</p></div>
+            <div class="scene"><p>I don't want to rush anything.</p></div>
+            <div class="scene"><p>I just really enjoy talking to you.</p></div>
+            <div class="scene"><p>And I want to keep learning more about you.</p></div>
+            <div class="scene"><p>So...</p></div>
+            <div class="scene"><p class="big">I wanted to ask you something.</p></div>
+        </div>
+        
+        <div class="bottom" id="bottom" style="display:none">
+            <div class="bar"><div class="fill" id="fill"></div></div>
+            <div class="controls">
+                <button onclick="prev()">BACK</button>
+                <button id="speedBtn" onclick="toggleSpeed()">1x</button>
+                <div class="page" id="page">01 / 01</div>
+                <button onclick="next()" id="nextBtn">NEXT</button>
+            </div>
+        </div>
+
+        <div class="question" id="question">
+          <div class="qbox">
+            <h2>CAN I GET TO<br>KNOW YOU MORE?</h2>
+            <p>I want to know what kind of person you really are and slowly find out what kind of people we could become to each other.<br><br>I just want to know you, if you'll let me.</p>
+            <div class="btn-group">
+              <button class="send" onclick="showEnd()">YES</button>
+              <button class="send" onclick="showEnd()">NO</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="end" id="end"><p id="endText"></p></div>
+    </div>
+    
+    <audio class="audio-player" id="song" src="cool-with-you.mp3" preload="auto" loop></audio>
+</div>
+
+<script>
+const scenes=[...document.querySelectorAll('.scene')], bottom=document.getElementById('bottom'),fill=document.getElementById('fill'),page=document.getElementById('page'),question=document.getElementById('question'),end=document.getElementById('end'),endText=document.getElementById('endText'),song=document.getElementById('song'),stamp=document.getElementById('stampUI');
+let current=0,playing=false,typeTimeout,isTyping=false,speedMultiplier=1;
+const nextBtn = document.getElementById('nextBtn');
+const speedBtn = document.getElementById('speedBtn');
+const totalSlides = scenes.length - 1;
+
+function startGame(){
+    current=1;
+    bottom.style.display='block';
+    stamp.style.display='none'; 
+    show();
+    song.volume=.6;
+    song.play().then(()=>{playing=true}).catch(()=>{});
+}
+
+function toggleSpeed() {
+    speedMultiplier = speedMultiplier === 1 ? 2 : 1;
+    speedBtn.innerText = speedMultiplier + 'x';
+}
+
+function show(){
+    clearTimeout(typeTimeout);
+    isTyping = false;
+    nextBtn.style.opacity = '1';
+    
+    scenes.forEach((s,i)=>{
+        s.classList.toggle('active',i===current);
+        let p = s.querySelector('p');
+        if(p && p.dataset.orig) p.innerHTML = p.dataset.orig; 
+    });
+    
+    page.textContent = String(current).padStart(2,'0') + ' / ' + String(totalSlides).padStart(2,'0');
+    fill.style.width = (((current - 1) / (totalSlides - 1)) * 100) + '%';
+
+    let activeP = scenes[current].querySelector('p');
+    if(activeP){
+        isTyping = true;
+        nextBtn.style.opacity = '0.4'; 
+        
+        if(!activeP.dataset.orig) activeP.dataset.orig = activeP.innerHTML;
+        let text = activeP.dataset.orig;
+        activeP.innerHTML = '';
+        let charIndex = 0;
+        
+        function typeWriter() {
+            if (charIndex < text.length) {
+                let currentText = text.substring(0, charIndex);
+                let nextChar = text.charAt(charIndex);
+                
+                if (nextChar === ' ') {
+                    activeP.innerHTML = currentText + ' <span class="cursor">_</span>';
+                } else {
+                    activeP.innerHTML = currentText + '<span class="flash-char">' + nextChar + '</span><span class="cursor">_</span>';
+                }
+                
+                charIndex++;
+                typeTimeout = setTimeout(typeWriter, 40 / speedMultiplier);
+            } else {
+                activeP.innerHTML = text; 
+                isTyping = false;
+                nextBtn.style.opacity = '1'; 
+            }
+        }
+        typeWriter();
+    }
+}
+
+function next(){
+    if(isTyping) return; 
+    if(current<scenes.length-1){
+        current++;show()
+    }else{
+        bottom.style.display='none';question.classList.add('show')
+    }
+}
+
+function prev(){
+    if(current>1){current--;show()}
+}
+
+function showEnd() {
+    question.classList.remove('show');
+    end.classList.add('show');
+    endText.innerHTML = 'THANK YOU.<br><br>♡<br><br>TEXT ME YOUR ANSWER.';
+}
+
+document.addEventListener('keydown',e=>{
+    if((e.key==='ArrowRight'||e.key===' ') && !isTyping) next();
+    if(e.key==='ArrowLeft') prev();
+});
+</script>
+</body>
+</html>
